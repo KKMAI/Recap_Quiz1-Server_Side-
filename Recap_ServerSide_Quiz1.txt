@@ -1,0 +1,63 @@
+Recap_ServerSide_Quiz1
+
+สร้าง virtaul_environment 
+>> py -m venv myvenv
+
+activate
+>> myvenv\Scripts\activate.bat
+
+ลง library 
+>> pip install Django psycopg2 django-extensions ipython jupyter notebook
+
+>> pip install ipython==8.25.0 jupyter_server==2.14.1 jupyterlab==4.2.2 jupyterlab_server==2.27.2
+
+>> pip install notebook==6.5.7
+
+เข้าไปสร้าง project&app
+
+>> django-admin startproject week6_tutorial
+>> cd week6_tutorial
+>> py manage.py startapp polls
+>> mkdir notebooks
+
+setting
+>> 
+INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+
+    "django_extensions",
+]
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'recap_shop_week4',
+        'USER': 'postgres',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': 5432
+    }
+}
+
+เปิด notebook
+>> python manage.py shell_plus --notebook
+
+รันอันนี้ทุกครั้ง
+
+>> import os
+>> os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+
+ตัวอย่างการ import model
+
+from blogs.models import *
+อธิบาย : from <app>.models import <class>
+
+ตัวอย่างการเล่น for loop
+
+for blog in Blog.objects.all():
+    print(blog)
