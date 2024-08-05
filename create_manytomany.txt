@@ -1,0 +1,132 @@
+customer = Customer.objects.get(first_name="Manit")
+product1 = Product.objects.get(name="Diamond Stud Earrings")
+product2 = Product.objects.get(name="Sofa")
+product3 = Product.objects.get(name="Rose Gold Hoop Earrings")
+
+# order = Order.objects.create(
+#     order_date='2024-08-05',
+#     remark="ฉันรวย อยากใช้เงินเยอะๆ",
+#     customer_id=customer.id
+# )
+main_order = Order.objects.get(id=186)
+# order_item1 = OrderItem.objects.create(
+#     order_id=main_order.id,
+#     amount=1,
+#     product_id=product1.id
+# )
+# order_item2 = OrderItem.objects.create(
+#     order_id=main_order.id,
+#     amount=2,
+#     product_id=product2.id
+# )
+# order_item3 = OrderItem.objects.create(
+#     order_id=main_order.id,
+#     amount=1,
+#     product_id=product3.id
+# )
+order_item1 = OrderItem.objects.get(id=375)
+order_item2 = OrderItem.objects.get(id=376)
+order_item3 = OrderItem.objects.get(id=377)
+
+total_price = (
+    (product1.price * order_item1.amount) +
+    (product2.price * order_item2.amount) +
+    (product3.price * order_item3.amount)
+)
+
+total_discount = (
+    (product1.price * order_item1.amount * 10/100) +
+    (product2.price * order_item2.amount * 10/100) +
+    (product3.price * order_item3.amount * 10/100)
+)
+
+# payment = Payment(
+#     payment_date = '2024-08-06',
+#     remark='ลูกค้า VIP ของเรา',
+#     price = total_price,
+#     discount = total_discount,
+#     order_id=main_order.id
+# )
+# payment.save()
+
+total_payment=Payment.objects.get(id=186)
+
+# paymentitem1 = PaymentItem(
+#     price = (product1.price * order_item1.amount),
+#     discount = (product1.price * order_item1.amount * 10/100),
+#     order_item_id=order_item1.id,
+#     payment_id=total_payment.id
+# )
+# paymentitem1.save()
+# paymentitem2 = PaymentItem(
+#     price = (product2.price * order_item2.amount),
+#     discount = (product2.price * order_item2.amount * 10/100),
+#     order_item_id=order_item2.id,
+#     payment_id=total_payment.id
+# )
+# paymentitem2.save()
+
+# paymentitem3 = PaymentItem(
+#     price = (product3.price * order_item3.amount),
+#     discount = (product3.price * order_item3.amount * 10/100),
+#     order_item_id=order_item3.id,
+#     payment_id=total_payment.id
+# )
+# paymentitem3.save()
+paymentitem1=PaymentItem.objects.get(id=370)
+paymentitem2=PaymentItem.objects.get(id=373)
+paymentitem3=PaymentItem.objects.get(id=374)
+
+paymentmethod1=PaymentMethod(
+    method='QR',
+    price=total_payment.price/2,
+    payment_id=total_payment.id
+)
+paymentmethod2=PaymentMethod(
+    method='CREDIT',
+    price=total_payment.price/2,
+    payment_id=total_payment.id
+)
+paymentmethod1.save()
+paymentmethod2.save()
+
+
+products = []
+paymentmethods = []
+
+for item in [order_item1, order_item2, order_item3]:
+    product_name = item.product.name
+    amount = item.amount
+    price = item.product.price
+    discount = price * 10/100
+
+    products.append({
+        'product': product_name,
+        'amount': amount,
+        'price': float(price),
+        'discount': float(discount)
+    })
+
+for i in [paymentmethod1, paymentmethod2]:
+    method = i.method
+    price = total_payment.price / 2
+
+    paymentmethods.append({
+        'method': method,
+        'price': float(price)
+    })
+
+output = {
+    'order_id': main_order.id,
+    'order_date': str(main_order.order_date),
+    'order_remark': main_order.remark,
+    'customer_name': f"{customer.first_name} {customer.last_name}",
+    'products': products,
+    'total_price': float(total_price),
+    'total_discount': float(total_discount),
+    'payment_date': str(payment.date),
+    'payment_remark': payment.remark,
+    'payment_method': paymentmethods 
+}
+
+print(json.dumps(output, indent=4, sort_keys=False, ensure_ascii=False))
